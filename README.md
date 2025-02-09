@@ -75,7 +75,7 @@ Os botões mecânicos podem gerar vários pulsos elétricos ao serem pressionado
 - O valor do contador é traduzido para um padrão correspondente na matriz.
 
 ### **7. Testes e Validação**
-- Teste do comportamento dos LEDs e botões foram realizados no Wokwi.
+- Teste do comportamento dos LEDs e botões foram realizados no Wokwi e kit BitDogLab.
 
 ## **Desenvolvedor**
 Camila Ramos Gomes
