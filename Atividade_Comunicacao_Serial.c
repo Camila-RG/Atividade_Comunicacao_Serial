@@ -9,6 +9,11 @@
 #include "inc/ssd1306.h"
 #include "inc/font.h"
 
+#define UART_ID uart0 // Seleciona a UART0
+#define BAUD_RATE 115200 // Define a taxa de transmissão
+#define UART_TX_PIN 0 // Pino GPIO usado para TX
+#define UART_RX_PIN 1 // Pino GPIO usado para RX
+
 #define I2C_PORT i2c1  // Define o barramento I2C a ser usado. Aqui está configurado para i2c1.
 #define I2C_SDA 14     // Define o pino de dados I2C (SDA) como o pino 14.
 #define I2C_SCL 15     // Define o pino de relógio I2C (SCL) como o pino 15.
@@ -108,11 +113,11 @@ static void gpio_irq_handler(uint gpio, uint32_t events)
 
     if (gpio == BUTTON_A_PIN && current_time - last_interrupt_time_a > 300000){ //Tempo de Debounce: 300 ms
         last_interrupt_time_a = current_time;
-        gpio_get(!LED_G_PIN); // Altera o estado do LED verde entre ligado e desligado
+        gpio_put(LED_G_PIN, !gpio_get(LED_G_PIN)); // Altera o estado do LED verde entre ligado e desligado
     }
     else if (gpio == BUTTON_B_PIN && current_time - last_interrupt_time_b > 300000) { //Tempo de Debounce: 300 ms
         last_interrupt_time_b = current_time;
-        gpio_get(!LED_B_PIN); // Altera o estado do LED azul entre ligado e desligado
+        gpio_put(LED_B_PIN, !gpio_get(LED_B_PIN)); // Altera o estado do LED azul entre ligado e desligado
     }
 }
 
@@ -128,12 +133,12 @@ int main()
 
     // I2C Inicialização. 400Khz.
     i2c_init(I2C_PORT, 400 * 1000);
-    
-    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C); // Define a função do pino GPIO SDA para I2C
-    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C); // Define a função do pino GPIO SCL para I2C
 
-    gpio_pull_up(I2C_SDA); // Ativa o resistor de pull-up no pino de dados (SDA)
-    gpio_pull_up(I2C_SCL); // Ativa o resistor de pull-up no pino de relógio (SCL)
+    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C); // Define a função do pino GPIO como I2C para o pino SDA
+    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C); // Define a função do pino GPIO como I2C para o pino SCL
+    gpio_pull_up(I2C_SDA); // Ativa o resistor de pull-up para a linha de dados (SDA)
+    gpio_pull_up(I2C_SCL); // Ativa o resistor de pull-up para a linha de relógio (SCL)
+
 
     ssd1306_t ssd; // Inicializa a estrutura que representa o display
 
@@ -144,7 +149,17 @@ int main()
     // Limpa o display, apagando todos os pixels (o display começa com todos os pixels apagados)
     ssd1306_fill(&ssd, false); 
     ssd1306_send_data(&ssd); // Envia os dados atualizados (todos os pixels apagados) para o display
+    
+     // Inicializa a UART
+     uart_init(UART_ID, BAUD_RATE);
 
+     // Configura os pinos GPIO para a UART
+     gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART); // Configura o pino 0 para TX
+     gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART); // Configura o pino 1 para RX
+ 
+     // Mensagem inicial
+     const char *init_message = "UART Demo - RP2\r\n";
+     uart_puts(UART_ID, init_message);
 
     // Configura interrupções para os botões
     gpio_set_irq_enabled_with_callback(BUTTON_A_PIN, GPIO_IRQ_EDGE_FALL, true, &gpio_irq_handler);
@@ -156,7 +171,10 @@ int main()
         cor = !cor;
         // Atualiza o conteúdo do display com animações
         ssd1306_fill(&ssd, !cor); // Limpa o display
-        ssd1306_draw_string(&ssd, "Teste", 8, 10); // Desenha uma string 
+        ssd1306_rect(&ssd, 3, 3, 122, 58, cor, !cor); // Desenha um retângulo
+        ssd1306_draw_string(&ssd, "S2", 8, 10); // Desenha uma string
+        ssd1306_draw_string(&ssd, "CAMILA", 20, 30); // Desenha uma string
+        ssd1306_draw_string(&ssd, "TESTE", 15, 48); // Desenha uma string      
         ssd1306_send_data(&ssd); // Atualiza o display
 
         sleep_ms(1000);
