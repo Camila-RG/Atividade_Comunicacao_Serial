@@ -51,6 +51,8 @@ O projeto consiste na interação do usuário com um display SSD1306, uma matriz
 - **Interação com os botões**: Pressione o **Botão A** para alternar o estado do LED RGB Verde e o **Botão B** para alternar o LED RGB Azul. O estado de cada LED será exibido no display SSD1306 e enviado para o Serial Monitor.
 
 ## **Passo a Passo da Implementação**
+Abaixo encontra-se um resumo dos passos que foram seguidos para conclusão da tarefa.
+
 ### **1. Configuração do Ambiente**
 - Configuração do VS Code para desenvolvimento.
 - Configuração do simulador Wokwi para testar os componentes.
