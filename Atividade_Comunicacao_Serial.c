@@ -106,18 +106,49 @@ void set_one_led(uint8_t r, uint8_t g, uint8_t b, int numero) {
     }
 }
 
-// Interrupção dos botões com debouncing
+// Inicialização do display fora da interrupção
+static ssd1306_t ssd;
+
+void init_display() {
+    ssd1306_init(&ssd, WIDTH, HEIGHT, false, endereco, I2C_PORT);  // Inicializa o display com as configurações fornecidas
+    ssd1306_config(&ssd);  // Configura o display
+    ssd1306_fill(&ssd, false);  // Limpa a tela
+    ssd1306_send_data(&ssd);  // Envia os dados para o display
+}
+
 static void gpio_irq_handler(uint gpio, uint32_t events)
 {
     uint32_t current_time = to_us_since_boot(get_absolute_time());
 
-    if (gpio == BUTTON_A_PIN && current_time - last_interrupt_time_a > 300000){ //Tempo de Debounce: 300 ms
+    if (gpio == BUTTON_A_PIN && current_time - last_interrupt_time_a > 300000) {
         last_interrupt_time_a = current_time;
-        gpio_put(LED_G_PIN, !gpio_get(LED_G_PIN)); // Altera o estado do LED verde entre ligado e desligado
+
+        // Alterna o estado do LED Verde
+        bool estado = !gpio_get(LED_G_PIN);
+        gpio_put(LED_G_PIN, estado);
+
+        // Envia mensagem para o Serial Monitor
+        uart_puts(UART_ID, estado ? "LED Verde ligado\r\n" : "LED Verde desligado\r\n");
+
+        // Atualiza o display OLED com a nova mensagem
+        ssd1306_fill(&ssd, false);  // Limpa o display
+        ssd1306_draw_string(&ssd, estado ? "LED Verde ON" : "LED Verde OFF", 10, 30);  // Atualiza com a mensagem
+        ssd1306_send_data(&ssd);  // Envia os dados para o display
     }
-    else if (gpio == BUTTON_B_PIN && current_time - last_interrupt_time_b > 300000) { //Tempo de Debounce: 300 ms
+    else if (gpio == BUTTON_B_PIN && current_time - last_interrupt_time_b > 300000) {
         last_interrupt_time_b = current_time;
-        gpio_put(LED_B_PIN, !gpio_get(LED_B_PIN)); // Altera o estado do LED azul entre ligado e desligado
+
+        // Alterna o estado do LED Azul
+        bool estado = !gpio_get(LED_B_PIN);
+        gpio_put(LED_B_PIN, estado);
+
+        // Envia mensagem para o Serial Monitor
+        uart_puts(UART_ID, estado ? "LED Azul ligado\r\n" : "LED Azul desligado\r\n");
+
+        // Atualiza o display OLED com a nova mensagem
+        ssd1306_fill(&ssd, false);  // Limpa o display
+        ssd1306_draw_string(&ssd, estado ? "LED Azul ON" : "LED Azul OFF", 10, 30);  // Atualiza com a mensagem
+        ssd1306_send_data(&ssd);  // Envia os dados para o display
     }
 }
 
@@ -139,17 +170,7 @@ int main()
     gpio_pull_up(I2C_SDA); // Ativa o resistor de pull-up para a linha de dados (SDA)
     gpio_pull_up(I2C_SCL); // Ativa o resistor de pull-up para a linha de relógio (SCL)
 
-
-    ssd1306_t ssd; // Inicializa a estrutura que representa o display
-
-    ssd1306_init(&ssd, WIDTH, HEIGHT, false, endereco, I2C_PORT); // Inicializa o display com as configurações fornecidas
-    ssd1306_config(&ssd); // Configura o display com os parâmetros padrão
-    ssd1306_send_data(&ssd); // Envia os dados para o display
-
-    // Limpa o display, apagando todos os pixels (o display começa com todos os pixels apagados)
-    ssd1306_fill(&ssd, false); 
-    ssd1306_send_data(&ssd); // Envia os dados atualizados (todos os pixels apagados) para o display
-    
+    init_display();
      // Inicializa a UART
      uart_init(UART_ID, BAUD_RATE);
 
@@ -157,7 +178,6 @@ int main()
      gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART); // Configura o pino 0 para TX
      gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART); // Configura o pino 1 para RX
  
-     // Mensagem inicial
      const char *init_message = "UART Demo - RP2\r\n";
      uart_puts(UART_ID, init_message);
 
@@ -168,16 +188,42 @@ int main()
     bool cor = true;
     while (true)
     {
-        cor = !cor;
-        // Atualiza o conteúdo do display com animações
-        ssd1306_fill(&ssd, !cor); // Limpa o display
-        ssd1306_rect(&ssd, 3, 3, 122, 58, cor, !cor); // Desenha um retângulo
-        ssd1306_draw_string(&ssd, "S2", 8, 10); // Desenha uma string
-        ssd1306_draw_string(&ssd, "CAMILA", 20, 30); // Desenha uma string
-        ssd1306_draw_string(&ssd, "TESTE", 15, 48); // Desenha uma string      
-        ssd1306_send_data(&ssd); // Atualiza o display
+    // Verifica se há dados disponíveis para leitura
+    if (uart_is_readable(UART_ID)) {
 
-        sleep_ms(1000);
+        char c = uart_getc(UART_ID);
+        
+        // Se um número de 0 a 9 for digitado ele é exibido no display
+        if (c >= '0' && c <= '9') {
+            int numero = c - '0';
+            set_one_led(led_r, led_g, led_b, numero);
+            ssd1306_fill(&ssd, false);
+            ssd1306_draw_string(&ssd, "NUM", 20,  15);
+            
+            char str[2];
+            str[0] = c;
+            str[1] = '\0';
+            
+            ssd1306_draw_string(&ssd, str, 50, 10);
+            ssd1306_send_data(&ssd);
+        }
+    
+        else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) { // Verifica se é letra
+            char texto[2] = {c, '\0'}; // Converte caractere em string para exibição
+            
+            // Mantém a mensagem fixa até novo comando
+            ssd1306_fill(&ssd, false);
+            ssd1306_draw_string(&ssd, "Letra:", 10, 10);
+            ssd1306_draw_string(&ssd, texto, 50, 10); // Exibe a letra digitada
+            ssd1306_send_data(&ssd);
+        }
+        // Envia de volta o caractere lido (eco)
+        uart_putc(UART_ID, c);
+        // Envia uma mensagem adicional para cada caractere recebido
+        uart_puts(UART_ID, " <- Eco do RP2\r\n");
+        }
     }
+    sleep_ms(1000);
+
     return 0;
 }
