@@ -125,13 +125,41 @@ int main()
     
     stdio_init_all();
     inicializacaocomponentes(); //Inicialização dos pinos dos LEDs e botões
-        
+
+    // I2C Inicialização. 400Khz.
+    i2c_init(I2C_PORT, 400 * 1000);
+    
+    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C); // Define a função do pino GPIO SDA para I2C
+    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C); // Define a função do pino GPIO SCL para I2C
+
+    gpio_pull_up(I2C_SDA); // Ativa o resistor de pull-up no pino de dados (SDA)
+    gpio_pull_up(I2C_SCL); // Ativa o resistor de pull-up no pino de relógio (SCL)
+
+    ssd1306_t ssd; // Inicializa a estrutura que representa o display
+
+    ssd1306_init(&ssd, WIDTH, HEIGHT, false, endereco, I2C_PORT); // Inicializa o display com as configurações fornecidas
+    ssd1306_config(&ssd); // Configura o display com os parâmetros padrão
+    ssd1306_send_data(&ssd); // Envia os dados para o display
+
+    // Limpa o display, apagando todos os pixels (o display começa com todos os pixels apagados)
+    ssd1306_fill(&ssd, false); 
+    ssd1306_send_data(&ssd); // Envia os dados atualizados (todos os pixels apagados) para o display
+
+
     // Configura interrupções para os botões
     gpio_set_irq_enabled_with_callback(BUTTON_A_PIN, GPIO_IRQ_EDGE_FALL, true, &gpio_irq_handler);
     gpio_set_irq_enabled_with_callback(BUTTON_B_PIN, GPIO_IRQ_EDGE_FALL, true, &gpio_irq_handler);
 
+    bool cor = true;
     while (true)
     {
+        cor = !cor;
+        // Atualiza o conteúdo do display com animações
+        ssd1306_fill(&ssd, !cor); // Limpa o display
+        ssd1306_draw_string(&ssd, "Teste", 8, 10); // Desenha uma string 
+        ssd1306_send_data(&ssd); // Atualiza o display
+
+        sleep_ms(1000);
     }
     return 0;
 }
