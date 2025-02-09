@@ -74,7 +74,11 @@ O projeto consiste na interação do usuário com um display SSD1306, uma matriz
 - Cada número de 0 a 9 é representado por um padrão fixo de LEDs acesos.
 - O valor do contador é traduzido para um padrão correspondente na matriz.
 
-### **7. Testes e Validação**
+### **7. Comunicação via UART e I2C**
+- UART: A comunicação com o Serial Monitor foi configurada via UART. Quando o usuário digita um caractere, ele é exibido no Serial Monitor e também refletido no display SSD1306 e na matriz WS2812.
+- I2C: A exibição no display SSD1306 foi implementada utilizando a comunicação I2C, permitindo que as mensagens sobre o estado dos LEDs e os números digitados via UART sejam mostradas no display em tempo real.
+
+### **8. Testes e Validação**
 - Teste do comportamento dos LEDs e botões foram realizados no Wokwi e kit BitDogLab.
 
 ## **Desenvolvedor**
