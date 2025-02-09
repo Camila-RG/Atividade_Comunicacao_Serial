@@ -192,31 +192,42 @@ int main()
     if (uart_is_readable(UART_ID)) {
 
         char c = uart_getc(UART_ID);
-        
-        // Se um número de 0 a 9 for digitado ele é exibido no display
+        // Se um número de 0 a 9 for digitado ele é exibido no display 
         if (c >= '0' && c <= '9') {
             int numero = c - '0';
             set_one_led(led_r, led_g, led_b, numero);
-            ssd1306_fill(&ssd, false);
-            ssd1306_draw_string(&ssd, "Numero  ", 20,  15);
             
-            char str[2];
-            str[0] = c;
-            str[1] = '\0';
+            ssd1306_fill(&ssd, false);  // Limpa o display
             
-            ssd1306_draw_string(&ssd, str, 20, 10);
+            // Define as posições X e Y para centralizar
+            int x_numero = 64 - (6 / 2);  // 6px é a largura de um caractere na fonte padrão
+            int x_texto = 64 - (8 * 4) / 2; // "Numero: " tem ~8 caracteres, então ajusta
+
+            // Exibe o número centralizado
+            ssd1306_draw_string(&ssd, "Numero:", x_texto, 20);
+            
+            char str[2] = {c, '\0'};
+            ssd1306_draw_string(&ssd, str, x_numero, 40); // Exibe o número abaixo
+            
             ssd1306_send_data(&ssd);
         }
-    
-        // Exibe a letra digitada no display
-        else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
+
+        // Se uma letra for digitada, exibe no centro do display
+        else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == ' ') {
             char texto[2] = {c, '\0'};
+
+            ssd1306_fill(&ssd, false);  // Limpa o display
+
+            // Calcula posição central para exibir "Letra:" e a letra
+            int x_letra = 64 - (6 / 2); // Centraliza a letra
+            int x_texto = 64 - (6 * 4) / 2; // "Letra:" tem ~5 caracteres
             
-            ssd1306_fill(&ssd, false);
-            ssd1306_draw_string(&ssd, "Letra ", 10, 10);
-            ssd1306_draw_string(&ssd, texto, 50, 10);
+            ssd1306_draw_string(&ssd, "Letra:", x_texto, 20);
+            ssd1306_draw_string(&ssd, texto, x_letra, 40); // Exibe a letra centralizada
+            
             ssd1306_send_data(&ssd);
         }
+
 
         // Envia de volta o caractere lido (eco)
         uart_putc(UART_ID, c);
