@@ -18,7 +18,7 @@
 #define BUTTON_A_PIN 5
 #define BUTTON_B_PIN 6
 
-// Função para inicializar os LEDs e botões
+// Função para inicializar os LEDs e botões(Componentes)
 void inicializacaocomponentes() {
     gpio_init(LED_G_PIN);
     gpio_set_dir(LED_G_PIN, GPIO_OUT);
