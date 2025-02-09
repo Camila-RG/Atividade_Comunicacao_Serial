@@ -65,10 +65,10 @@ O projeto consiste na interação do usuário com um display SSD1306, uma matriz
 - Alterar estado dos LEDs com base nos eventos capturados.
 
 ### **4. Tratamento de Bouncing (Debouncing)**
-Os botões mecânicos podem gerar vários pulsos elétricos ao serem pressionados, causando leituras erradas. Para evitar isso, foi adicionado um pequeno delay após a detecção do evento.
+- Os botões mecânicos podem gerar vários pulsos elétricos ao serem pressionados, causando leituras erradas. Para evitar isso, foi adicionado um pequeno delay após a detecção do evento.
 
 ### **5. Modificação da Biblioteca font.h**
-- Adicionados caracteres minúsculos para exibição no display SSD1306.
+- Adição de caracteres minúsculos para exibição no display SSD1306.
 
 ### **6. Exibição dos Números na Matriz WS2812**
 - Cada número de 0 a 9 é representado por um padrão fixo de LEDs acesos.
