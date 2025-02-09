@@ -1,4 +1,4 @@
-# Generated Cmake Pico project file
+
 
 cmake_minimum_required(VERSION 3.13)
 
@@ -23,7 +23,7 @@ if (EXISTS ${picoVscode})
     include(${picoVscode})
 endif()
 # ====================================================================================
-set(PICO_BOARD pico_w CACHE STRING "Board type")
+set(PICO_BOARD pico CACHE STRING "Board type")
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
@@ -35,13 +35,13 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(Atividade_Comunicacao_Serial Atividade_Comunicacao_Serial.c )
+add_executable(Atividade_Comunicacao_Serial Atividade_Comunicacao_Serial.c inc/ssd1306.c)
 
 pico_set_program_name(Atividade_Comunicacao_Serial "Atividade_Comunicacao_Serial")
 pico_set_program_version(Atividade_Comunicacao_Serial "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(Atividade_Comunicacao_Serial 1)
+pico_enable_stdio_uart(Atividade_Comunicacao_Serial 0)
 pico_enable_stdio_usb(Atividade_Comunicacao_Serial 1)
 
 # Add the standard library to the build
@@ -50,12 +50,19 @@ target_link_libraries(Atividade_Comunicacao_Serial
 
 # Add the standard include files to the build
 target_include_directories(Atividade_Comunicacao_Serial PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}
+  ${CMAKE_CURRENT_LIST_DIR}
 )
+
+target_sources(Atividade_Comunicacao_Serial PRIVATE Atividade_Comunicacao_Serial.c)
+
+pico_generate_pio_header(Atividade_Comunicacao_Serial ${CMAKE_CURRENT_LIST_DIR}/ws2812.pio OUTPUT_DIR ${CMAKE_CURRENT_LIST_DIR}/generated)
+
 
 # Add any user requested libraries
 target_link_libraries(Atividade_Comunicacao_Serial 
-        
+        hardware_i2c
+        pico_stdlib
+        hardware_pio
         )
 
 pico_add_extra_outputs(Atividade_Comunicacao_Serial)
