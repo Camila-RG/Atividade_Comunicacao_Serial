@@ -147,7 +147,7 @@ static void gpio_irq_handler(uint gpio, uint32_t events)
 
         // Atualiza o display OLED com a nova mensagem
         ssd1306_fill(&ssd, false);  // Limpa o display
-        ssd1306_draw_string(&ssd, estado ? "LED Azul ON" : "LED Azul OFF", 10, 30);  // Atualiza com a mensagem
+        ssd1306_draw_string(&ssd, estado ? "LED Azul ligado" : "LED Azul desligado", 10, 30);  // Atualiza com a mensagem
         ssd1306_send_data(&ssd);  // Envia os dados para o display
     }
 }
@@ -178,7 +178,7 @@ int main()
      gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART); // Configura o pino 0 para TX
      gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART); // Configura o pino 1 para RX
  
-     const char *init_message = "UART Demo - RP2\r\n";
+     const char *init_message = "Digite para exibir um caractere\r\n";
      uart_puts(UART_ID, init_message);
 
     // Configura interrupções para os botões
@@ -198,28 +198,29 @@ int main()
             int numero = c - '0';
             set_one_led(led_r, led_g, led_b, numero);
             ssd1306_fill(&ssd, false);
-            ssd1306_draw_string(&ssd, "NUM", 20,  15);
+            ssd1306_draw_string(&ssd, "Numero  ", 20,  15);
             
             char str[2];
             str[0] = c;
             str[1] = '\0';
             
-            ssd1306_draw_string(&ssd, str, 50, 10);
+            ssd1306_draw_string(&ssd, str, 20, 10);
             ssd1306_send_data(&ssd);
         }
     
-        else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) { // Verifica se é letra
-            char texto[2] = {c, '\0'}; // Converte caractere em string para exibição
+        // Exibe a letra digitada no display
+        else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
+            char texto[2] = {c, '\0'};
             
-            // Mantém a mensagem fixa até novo comando
             ssd1306_fill(&ssd, false);
-            ssd1306_draw_string(&ssd, "Letra:", 10, 10);
-            ssd1306_draw_string(&ssd, texto, 50, 10); // Exibe a letra digitada
+            ssd1306_draw_string(&ssd, "Letra ", 10, 10);
+            ssd1306_draw_string(&ssd, texto, 50, 10);
             ssd1306_send_data(&ssd);
         }
+
         // Envia de volta o caractere lido (eco)
         uart_putc(UART_ID, c);
-        // Envia uma mensagem adicional para cada caractere recebido
+
         uart_puts(UART_ID, " <- Eco do RP2\r\n");
         }
     }
