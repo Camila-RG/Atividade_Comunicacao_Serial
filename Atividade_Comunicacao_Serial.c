@@ -55,15 +55,18 @@ void inicializacaocomponentes() {
     gpio_pull_up(BUTTON_B_PIN);
 }
 
+// Interrupção dos botões com debouncing
 static void gpio_irq_handler(uint gpio, uint32_t events)
 {
     uint32_t current_time = to_us_since_boot(get_absolute_time());
 
     if (gpio == BUTTON_A_PIN && current_time - last_interrupt_time_a > 300000){ //Tempo de Debounce: 300 ms
         last_interrupt_time_a = current_time;
+        gpio_get(!LED_G_PIN); // Altera o estado do LED verde entre ligado e desligado
     }
     else if (gpio == BUTTON_B_PIN && current_time - last_interrupt_time_b > 300000) { //Tempo de Debounce: 300 ms
         last_interrupt_time_b = current_time;
+        gpio_get(!LED_B_PIN); // Altera o estado do LED azul entre ligado e desligado
     }
 }
 
@@ -76,7 +79,7 @@ int main()
     
     stdio_init_all();
     inicializacaocomponentes(); //Inicialização dos pinos dos LEDs e botões
-    
+        
     // Configura interrupções para os botões
     gpio_set_irq_enabled_with_callback(BUTTON_A_PIN, GPIO_IRQ_EDGE_FALL, true, &gpio_irq_handler);
     gpio_set_irq_enabled_with_callback(BUTTON_B_PIN, GPIO_IRQ_EDGE_FALL, true, &gpio_irq_handler);
