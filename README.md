@@ -1,4 +1,4 @@
-# Atividade Comunicação Serial
+# Atividade EmbarcaTech - Comunicação Serial
 
 ## Descrição
 Este repositório apresenta a solução da atividade prática proposta no EmbarcaTech(Aula 03/02/2025), sobre comunicação serial(UART e I2C), manipulação de LEDs e botões com interrupções e debouncing no microcontrolador RP2040.
