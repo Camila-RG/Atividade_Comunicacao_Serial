@@ -12,6 +12,7 @@
 #define I2C_PORT i2c1  // Define o barramento I2C a ser usado. Aqui está configurado para i2c1.
 #define I2C_SDA 14     // Define o pino de dados I2C (SDA) como o pino 14.
 #define I2C_SCL 15     // Define o pino de relógio I2C (SCL) como o pino 15.
+#define endereco 0x3C
 
 // Definição de constantes da matriz de leds
 #define IS_RGBW false
