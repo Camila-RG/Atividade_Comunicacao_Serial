@@ -38,7 +38,7 @@ O projeto consiste na interação do usuário com um display SSD1306, uma matriz
 ### **1. Preparando o Ambiente de Desenvolvimento**
 - **Instalar o SDK da Raspberry Pi Pico W**: Antes de começar, é necessário ter o SDK da Raspberry Pi Pico W configurado no VS Code para que o código seja compilado corretamente.
   
-- **Importar o projeto pela extensão da Raspberry Pi Pico W**
+- **Importar o projeto pela extensão da Raspberry Pi Pico W no VSCode**
 
 - **Configuração do Simulador Wokwi**: Para simular o projeto, use o simulador Wokwi.
 
