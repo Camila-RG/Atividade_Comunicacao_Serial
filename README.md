@@ -38,15 +38,15 @@ O projeto consiste na interação do usuário com um display SSD1306, uma matriz
 ### **1. Preparando o Ambiente de Desenvolvimento**
 - **Instalar o SDK da Raspberry Pi Pico W**: Antes de começar, é necessário ter o SDK da Raspberry Pi Pico W configurado no VS Code para que o código seja compilado corretamente.
   
-- **Importar o projeto pela extensão da Raspberry Pi Pico W no VSCode**
+- **Importar o projeto pela extensão da Raspberry Pi Pico no VSCode**
 
 - **Configuração do Simulador Wokwi**: Para simular o projeto, use o simulador Wokwi.
 
-- **Monitor Serial**: Após carregar o código, abra o **Serial Monitor** para interagir com o programa com os caracteres enviados como mensagens de controle dos LEDs.
+- **Monitor Serial**: Após carregar o código, abra o Serial Monitor para interagir com o programa com os caracteres enviados como mensagens de controle dos LEDs.
 
 ### **2. Usando a Interface**
 
-- **Entrada via UART**: No Serial Monitor, digite caracteres (letras ou números de 0 a 9, letras de A-Z e letras de a-z). Os caracteres serão exibidos no display SSD1306, e os números acenderão a matriz de LEDs WS2812.
+- **Entrada via UART**: No Serial Monitor, digite caracteres (números de 0 a 9, letras de A-Z e letras de a-z). Os caracteres serão exibidos no display SSD1306, e os números acenderão a matriz de LEDs WS2812.
 
 - **Interação com os botões**: Pressione o **Botão A** para alternar o estado do LED RGB Verde e o **Botão B** para alternar o LED RGB Azul. O estado de cada LED será exibido no display SSD1306 e enviado para o Serial Monitor.
 
