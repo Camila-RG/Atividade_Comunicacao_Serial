@@ -12,7 +12,7 @@
 #define I2C_PORT i2c1  // Define o barramento I2C a ser usado. Aqui está configurado para i2c1.
 #define I2C_SDA 14     // Define o pino de dados I2C (SDA) como o pino 14.
 #define I2C_SCL 15     // Define o pino de relógio I2C (SCL) como o pino 15.
-#define endereco 0x3C
+#define endereco 0x3C  // Define o endereço I2C do display OLED como 0x3C
 
 // Definição de constantes da matriz de leds
 #define IS_RGBW false
@@ -58,6 +58,47 @@ void inicializacaocomponentes() {
     gpio_init(BUTTON_B_PIN);
     gpio_set_dir(BUTTON_B_PIN, GPIO_IN);
     gpio_pull_up(BUTTON_B_PIN);
+}
+
+// Buffer para armazenar quais LEDs estão ligados matriz 5x5 e formar os números de 0 a 9
+bool led_buffer[10][NUM_PIXELS] = {
+    //1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25}
+    {1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1}, // Número 0
+    {0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0}, // Número 1
+    {1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1}, // Número 2
+    {1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1}, // Número 3
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1}, // Número 4
+    {1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1}, // Número 5
+    {1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1}, // Número 6
+    {0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1}, // Número 7
+    {1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1}, // Número 8
+    {1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1}, // Número 9
+};
+ 
+// Função para enviar dados para o LED WS2812
+static inline void put_pixel(uint32_t pixel_grb)
+{
+    pio_sm_put_blocking(pio0, 0, pixel_grb << 8u);
+}
+ 
+ // Função para converter valores RGB em um único valor de 32 bits no formato GRB
+static inline uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b)
+{
+    return ((uint32_t)(r) << 8) | ((uint32_t)(g) << 16) | (uint32_t)(b);
+}
+ 
+// Função para acender um número específico na matriz de LEDs
+void set_one_led(uint8_t r, uint8_t g, uint8_t b, int numero) {
+ 
+    uint32_t color = urgb_u32(r, g, b); // Define a cor
+ 
+    for (int i = 0; i < NUM_PIXELS; i++) {
+        if (led_buffer[numero][i]) {
+            put_pixel(color); // Liga os LEDs
+        } else {
+            put_pixel(0);  // Desliga os LEDs
+        }
+    }
 }
 
 // Interrupção dos botões com debouncing
