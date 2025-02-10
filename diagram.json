@@ -37,16 +37,16 @@
     {
       "type": "wokwi-pushbutton",
       "id": "btn1",
-      "top": -13,
-      "left": 249.6,
-      "attrs": { "color": "red" }
+      "top": 265.4,
+      "left": -96,
+      "attrs": { "color": "green" }
     },
     {
       "type": "wokwi-pushbutton",
       "id": "btn2",
-      "top": 92.6,
-      "left": 249.6,
-      "attrs": { "color": "green" }
+      "top": 265.4,
+      "left": 0,
+      "attrs": { "color": "black" }
     },
     { "type": "wokwi-neopixel", "id": "rgb1", "top": 150.1, "left": -97, "attrs": {} },
     { "type": "wokwi-neopixel", "id": "rgb2", "top": 150.1, "left": -135.4, "attrs": {} },
@@ -91,10 +91,7 @@
     [ "r3:2", "pico:GP11", "green", [ "v0" ] ],
     [ "led2:A", "r3:1", "green", [ "v0" ] ],
     [ "r1:2", "pico:GP13", "red", [ "v0" ] ],
-    [ "btn1:2.r", "pico:GND.7", "black", [ "h9.8", "v38.6" ] ],
-    [ "btn2:2.r", "pico:GND.5", "black", [ "h9.8", "v29" ] ],
-    [ "btn1:1.r", "pico:GP5", "gold", [ "h0.2", "v-28.8", "h-172.8", "v76.8" ] ],
-    [ "btn2:1.r", "pico:GP6", "gold", [ "h29", "v-144", "h-211.2", "v105.6" ] ],
+    [ "btn2:2.r", "pico:GND.5", "black", [ "h9.8", "v19.4", "h182.4", "v-163.24" ] ],
     [ "rgb2:DIN", "rgb1:DOUT", "white", [ "h8.8", "v9.6", "h28.8" ] ],
     [ "rgb2:DOUT", "rgb3:DIN", "white", [ "h-28.8", "v-10.5" ] ],
     [ "rgb3:DOUT", "rgb4:DIN", "white", [ "h-28.8", "v-10.5" ] ],
@@ -122,11 +119,19 @@
     [ "oled1:SDA", "pico:GP14", "blue", [ "v-19.2", "h307.27", "v-57.6" ] ],
     [ "pico:GP15", "oled1:SCL", "blue", [ "h-19.2", "v67.24", "h-326.7" ] ],
     [ "oled1:VCC", "vcc1:VCC", "red", [ "v0" ] ],
-    [ "oled1:GND", "pico:GND.4", "black", [ "v-38.4", "h326.4", "v-48" ] ],
+    [ "oled1:GND", "pico:GND.4", "black", [ "v-38.4", "h326.4", "v-57.64" ] ],
     [ "pico:GND.3", "led2:C", "black", [ "h-48", "v-57.6", "h-115.2", "v38.4" ] ],
     [ "led3:C", "pico:GND.3", "black", [ "v0", "h-18.8", "v-86.4", "h115.2", "v57.6" ] ],
     [ "led1:C", "pico:GND.3", "black", [ "v0", "h-18.8", "v-134.4", "h115.2", "v57.6" ] ],
-    [ "rgb1:DIN", "pico:GP7", "white", [ "h66.4", "v-115.2", "h134.4", "v38.4" ] ]
+    [ "rgb1:DIN", "pico:GP7", "white", [ "h66.4", "v-115.2", "h134.4", "v38.4" ] ],
+    [ "btn1:2.r", "pico:GND.5", "black", [ "h19.4", "v19.4", "h268.8", "v-163.2" ] ],
+    [
+      "btn2:1.r",
+      "pico:GP6",
+      "green",
+      [ "v0", "h230.6", "v-316.8", "h-163.2", "v96", "h0", "v9.6" ]
+    ],
+    [ "btn1:1.r", "pico:GP5", "green", [ "v-19.2", "h307.4", "v-288", "h-134.4", "v76.8" ] ]
   ],
   "dependencies": {}
 }
