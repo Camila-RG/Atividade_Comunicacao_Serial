@@ -87,4 +87,4 @@ Abaixo encontra-se um resumo dos passos que foram seguidos para conclusão da ta
 Camila Ramos Gomes
 
 # **Vídeo Explicativo**
-[vídeo explicativo do projeto]
+[vídeo explicativo do projeto](https://drive.google.com/file/d/1HNajWWrqb8xxIBygDoSgM0Ye9i9T5-ay/view?usp=sharing)
