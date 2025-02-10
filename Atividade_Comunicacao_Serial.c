@@ -128,6 +128,9 @@ int main()
             ssd1306_draw_string(&ssd, texto, x_letra, 40);
             
             ssd1306_send_data(&ssd);
+        }else {
+            const char *message = "Caractere invalido\r\n";
+            uart_puts(UART_ID, message);
         }
 
 
